@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Button, Heading, Image, HStack, Input, PinInput, PinInputField, Stack, Text, VStack, Card, ScaleFade, Tooltip, Flex, FormControl, useToast } from '@chakra-ui/react';
 import { motion, useAnimate } from 'framer-motion';
 import Logo from '../../components/Logo';
@@ -17,6 +17,14 @@ interface AuthProps { }
 // @ts-ignore
 const MotionBox = motion(Box);
 
+const ResendButton = memo(({ countdown, isButtonDisabled, handleResendCode }: { countdown: number, isButtonDisabled: boolean, handleResendCode: () => void }) => {
+  return (
+    <Button colorScheme="blue" mt={4} onClick={handleResendCode} isDisabled={isButtonDisabled}>
+      {isButtonDisabled ? `Отправить снова (${countdown})` : 'Отправить код повторно'}
+    </Button>
+  );
+});
+
 const Auth: FC<AuthProps> = () => {
   const toast = useToast()
   // Введен ли номер телефона или email
@@ -27,6 +35,8 @@ const Auth: FC<AuthProps> = () => {
   const [isEmailLogin, setIsEmailLogin] = useState(false); // Состояние для переключения между email и телефоном
   const [email, setEmail] = useState(''); // Email
   const [emailError, setEmailError] = useState(''); // Email validation error
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   // is СНГ страна
   const { countryInfo, isCIS } = useAppSelector((state) => state.countrySlice);
@@ -41,6 +51,49 @@ const Auth: FC<AuthProps> = () => {
       mutation.mutate(phoneNumber);
     }
   };
+
+  const handleResendCode = useCallback(() => {
+    setIsButtonDisabled(true);
+    setCountdown(30);
+    resendMutation.mutate(phoneNumber);
+  }, [phoneNumber]);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setIsButtonDisabled(false);
+    }
+  }, [countdown]);
+
+  const mutation = useMutation({
+    mutationFn: async (phoneNumber: string) => {
+      const res = await sendOTP(phoneNumber);
+      setResponse(res);
+      return res;
+    },
+    onSuccess: () => {
+      setPhoneSubmitted(true);
+    },
+    onError: (error) => {
+      console.error('Ошибка при отправке сообщения:', error);
+    },
+  });
+
+  const resendMutation = useMutation({
+    mutationFn: async (phoneNumber: string) => {
+      const res = await sendOTP(phoneNumber, true); // Pass the resend parameter as true
+      setResponse(res);
+      return res;
+    },
+    onSuccess: () => {
+      alert('Код отправлен снова!');
+    },
+    onError: (error) => {
+      console.error('Ошибка при повторной отправке сообщения:', error);
+    },
+  });
 
   const handleEmailSubmit = async () => {
     if (email) {
@@ -60,20 +113,6 @@ const Auth: FC<AuthProps> = () => {
   useEffect(() => {
     setResponse(null);
   }, [isEmailLogin]);
-
-  const mutation = useMutation({
-    mutationFn: async (phoneNumber: string) => {
-      const res = await sendOTP(phoneNumber);
-      setResponse(res);
-      return res;
-    },
-    onSuccess: () => {
-      setPhoneSubmitted(true);
-    },
-    onError: (error) => {
-      console.error('Ошибка при отправке сообщения:', error);
-    },
-  });
 
   const { status, data, error } = useQuery({
     queryKey: ['todos'],
@@ -116,10 +155,6 @@ const Auth: FC<AuthProps> = () => {
   const handleResetPhone = () => {
     setPhoneNumber('');
     setPhoneSubmitted(false);
-  };
-
-  const handleResendCode = () => {
-    alert('Код отправлен снова!');
   };
 
   const phoneInputRef = useRef<HTMLInputElement>(null);
@@ -251,9 +286,7 @@ const Auth: FC<AuthProps> = () => {
                     </PinInput>
                   </HStack>
 
-                  <Button colorScheme="blue" mt={4} onClick={handleResendCode}>
-                    Отправить код повторно
-                  </Button>
+                  <ResendButton countdown={countdown} isButtonDisabled={isButtonDisabled} handleResendCode={handleResendCode} />
 
                   <Button variant="link" mt={4} onClick={handleResetPhone}>
                     Ввести другой {isEmailLogin ? 'email' : 'номер телефона'}
@@ -317,7 +350,7 @@ const Auth: FC<AuthProps> = () => {
   );
 };
 
-export default Auth;
+export default memo(Auth);
 
 
 
