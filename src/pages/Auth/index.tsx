@@ -5,7 +5,7 @@ import Logo from '../../components/Logo';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import InfoIcon from '../../components/icons/Info';
 import QRLinks from './components/QRLinks';
-import PhoneSVG from '../Auth/assets/Phone.svg';
+import PhoneSVG from '../Auth/assets/phone.svg';
 import NotificationSVG from '../Auth/assets/notification.svg';
 import PhoneInput from './components/PhoneInput';
 import { useAppSelector } from '../../store/hooks';
