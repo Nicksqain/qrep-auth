@@ -20,7 +20,7 @@ const MotionBox = motion(Box);
 const ResendButton = memo(({ countdown, isButtonDisabled, handleResendCode }: { countdown: number, isButtonDisabled: boolean, handleResendCode: () => void }) => {
   return (
     <Button colorScheme="blue" mt={4} onClick={handleResendCode} isDisabled={isButtonDisabled}>
-      {isButtonDisabled ? `Отправить снова (${countdown})` : 'Отправить код повторно'}
+      {isButtonDisabled ? `Отправить код повторно (${countdown})` : 'Отправить код повторно'}
     </Button>
   );
 });
@@ -54,7 +54,6 @@ const Auth: FC<AuthProps> = () => {
 
   const handleResendCode = useCallback(() => {
     setIsButtonDisabled(true);
-    setCountdown(30);
     resendMutation.mutate(phoneNumber);
   }, [phoneNumber]);
 
@@ -75,6 +74,7 @@ const Auth: FC<AuthProps> = () => {
     },
     onSuccess: () => {
       setPhoneSubmitted(true);
+      setCountdown(60);
     },
     onError: (error) => {
       console.error('Ошибка при отправке сообщения:', error);
@@ -88,7 +88,15 @@ const Auth: FC<AuthProps> = () => {
       return res;
     },
     onSuccess: () => {
-      alert('Код отправлен снова!');
+      setCountdown(60);
+      toast({
+        title: 'Отправлено',
+        position: 'top',
+        description: "Код верификации отправлен повторно",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     },
     onError: (error) => {
       console.error('Ошибка при повторной отправке сообщения:', error);
