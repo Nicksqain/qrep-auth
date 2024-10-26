@@ -67,8 +67,8 @@ const Auth: FC<AuthProps> = () => {
   }, [countdown]);
 
   const mutation = useMutation({
-    mutationFn: async (phoneNumber: string) => {
-      const res = await sendOTP(phoneNumber);
+    mutationFn: async (contact: string) => {
+      const res = await sendOTP(contact);
       setResponse(res);
       return res;
     },
@@ -82,8 +82,8 @@ const Auth: FC<AuthProps> = () => {
   });
 
   const resendMutation = useMutation({
-    mutationFn: async (phoneNumber: string) => {
-      const res = await sendOTP(phoneNumber, true); // Pass the resend parameter as true
+    mutationFn: async (contact: string) => {
+      const res = await sendOTP(contact, true); // Pass the resend parameter as true
       setResponse(res);
       return res;
     },
@@ -111,7 +111,7 @@ const Auth: FC<AuthProps> = () => {
         setEmailError('');
         // Обработка успешной валидации
         setPhoneSubmitted(true);
-        // mutation.mutate(email);
+        mutation.mutate(email);
       }
     }
   };
