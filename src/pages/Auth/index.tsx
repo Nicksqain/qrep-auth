@@ -109,8 +109,6 @@ const Auth: FC<AuthProps> = () => {
         setEmailError('Please enter a valid email address');
       } else {
         setEmailError('');
-        // Обработка успешной валидации
-        setPhoneSubmitted(true);
         mutation.mutate(email);
       }
     }
