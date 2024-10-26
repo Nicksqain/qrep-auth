@@ -121,8 +121,8 @@ const Auth: FC<AuthProps> = () => {
   }, [isEmailLogin]);
 
   const { status, data, error } = useQuery({
-    queryKey: ['todos'],
-    queryFn: () => verifyOTP(phoneNumber, otp),
+    queryKey: ['verifyOTP'],
+    queryFn: () => isEmailLogin ? verifyOTP(email, otp) : verifyOTP(phoneNumber, otp),
     enabled: phoneSubmitted && otp.length === 6,
     refetchOnWindowFocus: false,
     retry: false
