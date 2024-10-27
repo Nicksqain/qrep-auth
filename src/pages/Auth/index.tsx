@@ -1,5 +1,5 @@
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Button, Heading, Image, HStack, Input, PinInput, PinInputField, Stack, Text, VStack, Card, ScaleFade, Tooltip, Flex, FormControl, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, Image, HStack, Input, PinInput, PinInputField, Stack, Text, VStack, Card, ScaleFade, Tooltip, Flex, FormControl, useToast, useBreakpointValue } from '@chakra-ui/react';
 import { motion, useAnimate } from 'framer-motion';
 import Logo from '../../components/Logo';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -11,6 +11,8 @@ import PhoneInput from './components/PhoneInput';
 import { useAppSelector } from '../../store/hooks';
 import { validateEmail } from '../../helpers/validation';
 import { sendOTP, verifyOTP } from '../../api/services/otpAuthServices';
+
+import './styles.scss';
 
 interface AuthProps { }
 
@@ -38,6 +40,8 @@ const Auth: FC<AuthProps> = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   // is СНГ страна
   const { countryInfo, isCIS } = useAppSelector((state) => state.countrySlice);
 
@@ -53,12 +57,12 @@ const Auth: FC<AuthProps> = () => {
   };
 
   const handleResendCode = useCallback(() => {
-    setIsButtonDisabled(true);
     resendMutation.mutate(phoneNumber);
   }, [phoneNumber]);
 
   useEffect(() => {
     if (countdown > 0) {
+      setIsButtonDisabled(true);
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else {
@@ -207,11 +211,11 @@ const Auth: FC<AuthProps> = () => {
 
   return (
     <ScaleFade initialScale={0.9} in>
-      <Card variant={"outline"} borderRadius={10}>
-        <VStack align="start" textAlign={"start"} gap={10} p={50}>
+      <Card className='auth-card' variant={"outline"} borderRadius={10}>
+        <VStack className='auth-container' align="start" textAlign={"start"} gap={10}>
           <Logo />
-          <HStack justifyContent={"space-between"} height={330} width="100%" spacing={8}>
-            <Box w={350} height={"100%"}>
+          <HStack className='auth-content-box' justifyContent={"space-between"} height={330} width="100%" spacing={8}>
+            <VStack className='auth-form' align={"start"} w={350}>
               <Heading size={"lg"} mb={6}>
                 {phoneSubmitted ? (mutation.data?.isRegistered ? 'Вход' : 'Регистрация') : 'Вход / Регистрация'}
               </Heading>
@@ -220,7 +224,7 @@ const Auth: FC<AuthProps> = () => {
                 <Stack spacing={10}>
                   <Flex alignItems="start">
                     <Text>Введите ваш {isEmailLogin ? 'email' : 'номер телефона'} для отправки кода верификации</Text>
-                    <Tooltip label="Подсказка">
+                    <Tooltip label="Номер телефона используется для системы лояльности!">
                       <Flex><InfoIcon width={25} height={25} /></Flex>
                     </Tooltip>
                   </Flex>
@@ -261,8 +265,7 @@ const Auth: FC<AuthProps> = () => {
                               handlePhoneSubmit();
                             }
                           }}
-                        />
-                        {phoneNumber}
+                          />
                       </>
                     )}
                     <Button isLoading={isLoading} size="lg" colorScheme="blue" onClick={isEmailLogin ? handleEmailSubmit : handlePhoneSubmit} isDisabled={isEmailLogin ? !email : !isValidPhone}>
@@ -299,56 +302,55 @@ const Auth: FC<AuthProps> = () => {
                   </Button>
                 </VStack>
               )}
-            </Box>
-            <MotionBox
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: !phoneSubmitted ? 330 : 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-              overflow="hidden"
-              // style={{ display: !phoneSubmitted ? 'block' : 'none' }}
-              // onAnimationComplete={() => {
-              //   if (phoneSubmitted) {
-              //     (document.querySelector('.motion-box') as HTMLElement).style.display = 'none';
-              //   }
-              // }}
-              className="motion-box"
-            >
-              <QRLinks />
-            </MotionBox>
-            <MotionBox
-              key={`image-${phoneSubmitted}`}
-              initial={{ opacity: 0, width: 0 }}
-              exit={{ opacity: 0, width: 330 }}
-              animate={{ opacity: phoneSubmitted ? 1 : 0, width: phoneSubmitted ? 330 : 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-              overflow="hidden"
-              // borderLeft="1px solid #e2e8f0"
-              onAnimationComplete={() => {
-                if (phoneSubmitted) {
-                  myAnimation();
-                }
-              }}
-            >
-              <Box style={{ position: "relative", backgroundColor: "#d3dfed", borderRadius: 10 }} height={330}>
-                <Image
-                  ref={phoneImageRef}
-                  zIndex={1}
-                  style={{ position: "absolute", top: 0, right: 0, transform: 'translate(330px, -120px)' }}
-                  src={PhoneSVG}
-                  alt="Phone verification"
-                  display={phoneSubmitted ? 'block' : 'none'}
-                />
-                <Image
-                  ref={notificationImageRef}
-                  zIndex={2}
-                  transformOrigin={"bottom"}
-                  style={{ position: "absolute", top: 0, right: 0, transform: 'translate(330px, -120px)' }}
-                  src={NotificationSVG}
-                  alt="Phone verification"
-                  display={phoneSubmitted ? 'block' : 'none'}
-                />
-              </Box>
-            </MotionBox>
+            </VStack>
+            {isMobile ? <QRLinks /> :
+              <>
+                <MotionBox
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: !phoneSubmitted ? 330 : 0 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  overflow="hidden"
+                  className="motion-box"
+                >
+                  <QRLinks />
+                </MotionBox>
+                <MotionBox
+                  className={"hide-on-small"}
+                  key={`image-${phoneSubmitted}`}
+                  initial={{ opacity: 0, width: 0 }}
+                  exit={{ opacity: 0, width: 330 }}
+                  animate={{ opacity: phoneSubmitted ? 1 : 0, width: phoneSubmitted ? 330 : 0 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  overflow="hidden"
+                  // borderLeft="1px solid #e2e8f0"
+                  onAnimationComplete={() => {
+                    if (phoneSubmitted) {
+                      myAnimation();
+                    }
+                  }}
+                >
+                  <Box style={{ position: "relative", backgroundColor: "#d3dfed", borderRadius: 10 }} height={330}>
+                    <Image
+                      ref={phoneImageRef}
+                      zIndex={1}
+                      style={{ position: "absolute", top: 0, right: 0, transform: 'translate(330px, -120px)' }}
+                      src={PhoneSVG}
+                      alt="Phone verification"
+                      display={phoneSubmitted ? 'block' : 'none'}
+                    />
+                    <Image
+                      ref={notificationImageRef}
+                      zIndex={2}
+                      transformOrigin={"bottom"}
+                      style={{ position: "absolute", top: 0, right: 0, transform: 'translate(330px, -120px)' }}
+                      src={NotificationSVG}
+                      alt="Phone verification"
+                      display={phoneSubmitted ? 'block' : 'none'}
+                    />
+                  </Box>
+                </MotionBox>
+              </>
+            }
           </HStack>
         </VStack>
       </Card>

@@ -11,12 +11,22 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html, body, #fullheight {
+  min-height: 100% !important;
+  height: 100%;
+}
+
 body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh !important;
+}
+
+@media (max-width: 600px) {
+  body {
+    display: inherit;
+  }
 }
 
 /* @media (prefers-color-scheme: light) {

@@ -1,0 +1,28 @@
+.auth {
+  &-card {
+    padding: 50px;
+  }
+}
+
+@media (max-width: 850px) {
+  .auth-card {
+    height: 100%;
+    padding: 30px;
+  }
+  .auth-container {
+    height: 100%;
+  }
+  .auth-content-box {
+    height: 100% !important;
+    flex-direction: column !important;
+    justify-content: space-evenly !important;
+  }
+  .auth-form {
+    width: 100%;
+    height: auto;
+  }
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+}
