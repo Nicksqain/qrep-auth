@@ -11,13 +11,12 @@ import { setupStore } from './store/index.ts'
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
     <ReduxProvider store={setupStore()}>
       <QueryClientProvider client={queryClient}>
         <ChakraBaseProvider theme={theme}>
           <App />
         </ChakraBaseProvider>
       </QueryClientProvider>
-    </ReduxProvider>
-  </StrictMode>,
+  </ReduxProvider>
 )
