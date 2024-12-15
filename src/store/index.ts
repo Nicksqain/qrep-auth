@@ -1,8 +1,9 @@
 import { Action, combineReducers, configureStore } from "@reduxjs/toolkit";
-import { countrySlice } from "../slices";
+import { countrySlice, referrerSlice } from "../slices";
 
 const appReducer = combineReducers({
   countrySlice,
+  referrerSlice,
 });
 
 const rootReducer = (state: any, action: Action) => {
