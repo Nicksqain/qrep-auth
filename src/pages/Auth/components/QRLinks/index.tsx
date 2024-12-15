@@ -47,7 +47,7 @@ const QRLinks: FC<QRLinksProps> = () => {
             </HStack>
             <HStack gap={4}>
               <Image height={"3rem"} src={waiCon} alt="" />
-              <Link color='whatsapp.500' textDecoration={"underline dotted"} href='whatsapp://send?phone=77015722440' target='_blank'>
+              <Link color='whatsapp.500' textDecoration={"underline dotted"} href='whatsapp://send?phone=77015721064' target='_blank'>
                 WhatsApp
               </Link>
             </HStack>
