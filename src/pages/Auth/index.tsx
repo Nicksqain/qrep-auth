@@ -8,11 +8,13 @@ import QRLinks from './components/QRLinks';
 import PhoneSVG from '../Auth/assets/phone.svg';
 import NotificationSVG from '../Auth/assets/notification.svg';
 import PhoneInput from './components/PhoneInput';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { validateEmail } from '../../helpers/validation';
 import { sendOTP, verifyOTP } from '../../api/services/otpAuthServices';
 
 import './styles.scss';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { setReferrer } from '../../slices/referrer.slice';
 
 interface AuthProps { }
 
@@ -41,6 +43,11 @@ const Auth: FC<AuthProps> = () => {
   const [countdown, setCountdown] = useState(0);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { referrer } = useAppSelector(state => state.referrerSlice)
 
   // is СНГ страна
   const { countryInfo, isCIS } = useAppSelector((state) => state.countrySlice);
@@ -79,8 +86,16 @@ const Auth: FC<AuthProps> = () => {
     onSuccess: () => {
       setPhoneSubmitted(true);
       setCountdown(60);
+      setOtp('');
     },
     onError: (error) => {
+      toast({
+        title: 'Ошибка',
+        description: `Не удалось отправить код. Проверьте данные.`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       console.error('Ошибка при отправке сообщения:', error);
     },
   });
@@ -92,6 +107,7 @@ const Auth: FC<AuthProps> = () => {
       return res;
     },
     onSuccess: () => {
+      setOtp('');
       setCountdown(60);
       toast({
         title: 'Отправлено',
@@ -120,6 +136,31 @@ const Auth: FC<AuthProps> = () => {
 
   const [response, setResponse] = useState<any>(null);
 
+  // Проверка наличия параметра referrer в URL (откуда пришел пользователь)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const referrer = params.get('referrer');
+
+    // Сохранение в Redux и localStorage
+    if (referrer) {
+      dispatch(setReferrer(referrer));
+    }
+
+    // Удаление параметра из URL
+    params.delete('referrer');
+    navigate({ search: params.toString() }, { replace: true });
+
+    if (referrer?.endsWith('/order')) {
+      toast({
+        title: 'Авторизация',
+        description: "Авторизуйтесь, чтобы отслеживать ваши заказы",
+        status: 'info',
+        duration: null,
+        isClosable: true,
+      });
+    }
+  }, [location.search, dispatch, navigate]);
+
   useEffect(() => {
     setResponse(null);
   }, [isEmailLogin]);
@@ -138,13 +179,17 @@ const Auth: FC<AuthProps> = () => {
       if (data.is_valid) {
         toast({
           title: 'Success',
-          description: "OTP verification successful!",
+          description: "Добро пожаловать!",
           status: 'success',
           duration: 1000,
           isClosable: true,
         });
         if (data.auth_redirect) {
-          window.location.replace(import.meta.env.VITE_APP_SITE_URL + data.auth_redirect);
+          const baseUrl = new URL(data.auth_redirect);
+          const params = new URLSearchParams(baseUrl.search);
+          params.append('referrer', referrer ?? '');
+          baseUrl.search = params.toString();
+          window.location.replace(baseUrl.toString());
         }
       } else {
         // toast('Invalid OTP. Please try again.');
@@ -285,7 +330,7 @@ const Auth: FC<AuthProps> = () => {
                     {/* <Text>{isEmailLogin ? email : '+7 702 596 2345'}</Text> */}
                   </Box>
                   <HStack>
-                    <PinInput size={"lg"} onChange={(value) => setOtp(value)}>
+                    <PinInput size={"lg"} value={otp} onChange={(value) => setOtp(value)}>
                       <PinInputField ref={pinInputRef} />
                       <PinInputField />
                       <PinInputField />
