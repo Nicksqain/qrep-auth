@@ -31,7 +31,7 @@ const QRLinks: FC<QRLinksProps> = () => {
               <Image height={100} src={wabotqr} alt="" />
               <Text>
                 QR в{' '}
-                <Link color='whatsapp.500' textDecoration={"underline dotted"} href='https://wa.me/77015722440' target='_blank'>
+                <Link color='whatsapp.500' textDecoration={"underline dotted"} href='https://wa.me/77015721064' target='_blank'>
                   WhatsApp
                 </Link>
               </Text>
