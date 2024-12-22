@@ -166,7 +166,7 @@ const Auth: FC<AuthProps> = () => {
   }, [isEmailLogin]);
 
   const { status, data, error } = useQuery({
-    queryKey: ['verifyOTP'],
+    queryKey: ['verifyOTP', phoneNumber, otp],
     queryFn: () => isEmailLogin ? verifyOTP(email, otp) : verifyOTP(phoneNumber, otp),
     enabled: phoneSubmitted && otp.length === 6,
     refetchOnWindowFocus: false,
@@ -176,7 +176,7 @@ const Auth: FC<AuthProps> = () => {
   // При успешной верификации OTP
   useEffect(() => {
     if (status === 'success') {
-      if (data.is_valid) {
+      if (otp.length === 6 && data.is_valid) {
         toast({
           title: 'Success',
           description: "Добро пожаловать!",
@@ -191,8 +191,16 @@ const Auth: FC<AuthProps> = () => {
           baseUrl.search = params.toString();
           window.location.replace(baseUrl.toString());
         }
-      } else {
-        // toast('Invalid OTP. Please try again.');
+      }
+      if (otp.length === 6 && data.is_valid === false) {
+        setOtp(prev => prev.slice(0, -1));
+        toast({
+          title: 'Ошибка',
+          description: `Неверный код верификации`,
+          status: 'error',
+          duration: 1000,
+          isClosable: true,
+        })
       }
     } else if (status === 'error') {
       toast({
@@ -330,7 +338,7 @@ const Auth: FC<AuthProps> = () => {
                     {/* <Text>{isEmailLogin ? email : '+7 702 596 2345'}</Text> */}
                   </Box>
                   <HStack>
-                    <PinInput size={"lg"} value={otp} onChange={(value) => setOtp(value)}>
+                    <PinInput size={"lg"} value={otp} onChange={(value) => setOtp(value)} isInvalid={otp.length === 6 && !data?.is_valid}>
                       <PinInputField ref={pinInputRef} />
                       <PinInputField />
                       <PinInputField />
