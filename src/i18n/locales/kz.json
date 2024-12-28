@@ -1,0 +1,25 @@
+{
+  "russian": "Орысша",
+  "english": "Ағылшынша",
+  "kazakh": "Қазақша",
+
+  "unified_auth": "Единая авторизация",
+  "login_registration": "Кіру / Тіркелу",
+  "enter_phone_number": "Верификация кодын жіберу үшін телефон нөміріңізді енгізіңіз",
+  "enter_email": "Введите ваш email для отправки кода верификации",
+  "phone_number_info": "Телефон нөмірі лояльдық жүйе үшін қолданылады",
+  "send_code": "Кодты жіберу",
+  "login": "Кіру",
+  "registration": "Тіркелу",
+  "resend_code": "Кодты қайталап жіберу",
+  "enter_code_sent": "{{source}} қосымшаларына жіберілген кодты енгізіңіз",
+  "enter_code_sent_email": "Верификация кодыңызды жіберу үшін email-ді енгізіңіз",
+  "enter_another_phone": "Басқа телефон нөмірін енгізу",
+  "enter_another_email": "Басқа email енгізу",
+  "login_with_phone": "Телефон арқылы кіру",
+  "login_with_email": "Email арқылы кіру",
+  "qr_in_your_phone": "QR СІЗДІҢ ТЕЛЕФОНДА",
+  "use_chatbots": "Қай жерде болсаңыз да QR сервисіне қолжетімді болу үшін, WhatsApp және Telegram чат-боттарын пайдаланыңыз.",
+  "authorization": "Авторизация",
+  "track_orders": "Тапсырыстарыңызды бақылау үшін авторизациядан өтіңіз"
+}
