@@ -15,6 +15,10 @@ import { sendOTP, verifyOTP } from '../../api/services/otpAuthServices';
 import './styles.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { setReferrer } from '../../slices/referrer.slice';
+import LanguageSwitcher from '../../shared/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
+import { setLanguage } from '../../slices/language.slice';
+import { Language } from '../../constants/languages';
 
 interface AuthProps { }
 
@@ -22,15 +26,17 @@ interface AuthProps { }
 const MotionBox = motion(Box);
 
 const ResendButton = memo(({ countdown, isButtonDisabled, handleResendCode }: { countdown: number, isButtonDisabled: boolean, handleResendCode: () => void }) => {
+  const { t } = useTranslation()
   return (
     <Button colorScheme="blue" mt={4} onClick={handleResendCode} isDisabled={isButtonDisabled}>
-      {isButtonDisabled ? `Отправить код повторно (${countdown})` : 'Отправить код повторно'}
+      {`${t('resend_code')} ${isButtonDisabled ? `(${countdown})` : ''}`}
     </Button>
   );
 });
 
 const Auth: FC<AuthProps> = () => {
   const toast = useToast()
+  const { t } = useTranslation()
   // Введен ли номер телефона или email
   const [phoneSubmitted, setPhoneSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -140,8 +146,12 @@ const Auth: FC<AuthProps> = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const referrer = params.get('referrer');
+    const language = params.get('lang') as Language;
 
     // Сохранение в Redux и localStorage
+    if (language) {
+      dispatch(setLanguage(language))
+    }
     if (referrer) {
       dispatch(setReferrer(referrer));
     }
@@ -152,8 +162,8 @@ const Auth: FC<AuthProps> = () => {
 
     if (referrer?.endsWith('/order')) {
       toast({
-        title: 'Авторизация',
-        description: "Авторизуйтесь, чтобы отслеживать ваши заказы",
+        title: t('authorization'),
+        description: t('track_orders'),
         status: 'info',
         duration: null,
         isClosable: true,
@@ -178,7 +188,7 @@ const Auth: FC<AuthProps> = () => {
     if (status === 'success') {
       if (otp.length === 6 && data.is_valid) {
         toast({
-          title: 'Success',
+          title: 'Успех',
           description: "Добро пожаловать!",
           status: 'success',
           duration: 1000,
@@ -266,18 +276,18 @@ const Auth: FC<AuthProps> = () => {
     <ScaleFade initialScale={0.9} in>
       <Card className='auth-card' variant={"outline"} borderRadius={10}>
         <VStack className='auth-container' align="start" textAlign={"start"} gap={10}>
-          <Logo />
+          <HStack justifyContent={"space-between"} w={"100%"}><Logo /><LanguageSwitcher /></HStack>
           <HStack className='auth-content-box' justifyContent={"space-between"} height={330} width="100%" spacing={8}>
             <VStack className='auth-form' align={"start"} w={350}>
               <Heading size={"lg"} mb={6}>
-                {phoneSubmitted ? (mutation.data?.isRegistered ? 'Вход' : 'Регистрация') : 'Вход / Регистрация'}
+                {phoneSubmitted ? (mutation.data?.isRegistered ? t('login') : t('registration')) : t('login_registration')}
               </Heading>
 
               {!phoneSubmitted && (
                 <Stack spacing={10}>
                   <Flex alignItems="start">
-                    <Text>Введите ваш {isEmailLogin ? 'email' : 'номер телефона'} для отправки кода верификации</Text>
-                    <Tooltip label="Номер телефона используется для системы лояльности!">
+                    <Text>{isEmailLogin ? t('enter_email') : t('enter_phone_number')}</Text>
+                    <Tooltip label={t('phone_number_info')}>
                       <Flex><InfoIcon width={25} height={25} /></Flex>
                     </Tooltip>
                   </Flex>
@@ -322,10 +332,10 @@ const Auth: FC<AuthProps> = () => {
                       </>
                     )}
                     <Button isLoading={isLoading} size="lg" colorScheme="blue" onClick={isEmailLogin ? handleEmailSubmit : handlePhoneSubmit} isDisabled={isEmailLogin ? !email : !isValidPhone}>
-                      Отправить код
+                      {t('send_code')}
                     </Button>
                     <Button variant="link" onClick={() => setIsEmailLogin(!isEmailLogin)}>
-                      {isEmailLogin ? 'Войти через телефон' : 'Войти через email'}
+                      {isEmailLogin ? t('login_with_phone') : t('login_with_email')}
                     </Button>
                   </Stack>
                 </Stack>
@@ -334,7 +344,7 @@ const Auth: FC<AuthProps> = () => {
               {phoneSubmitted && (
                 <VStack align={"start"}>
                   <Box mb={4}>
-                    <Text>Введите код, отправленный в {isEmailLogin ? 'email' : mutation.data?.final_source}</Text>
+                    <Text>{isEmailLogin ? t('enter_code_sent_email') : t('enter_code_sent', { source: mutation.data?.final_source })}</Text>
                     {/* <Text>{isEmailLogin ? email : '+7 702 596 2345'}</Text> */}
                   </Box>
                   <HStack>
@@ -351,7 +361,7 @@ const Auth: FC<AuthProps> = () => {
                   <ResendButton countdown={countdown} isButtonDisabled={isButtonDisabled} handleResendCode={handleResendCode} />
 
                   <Button variant="link" mt={4} onClick={handleResetPhone}>
-                    Ввести другой {isEmailLogin ? 'email' : 'номер телефона'}
+                    {isEmailLogin ? t('enter_another_email') : t('enter_another_phone')}
                   </Button>
                 </VStack>
               )}
