@@ -41,6 +41,7 @@ const Auth: FC<AuthProps> = () => {
   const [phoneSubmitted, setPhoneSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isValidPhone, setIsValidPhone] = useState(false);
+  const [isInvalidOTP, setIsInvalidOTP] = useState(false);
   const [otp, setOtp] = useState('');
   const [isEmailLogin, setIsEmailLogin] = useState(false); // Состояние для переключения между email и телефоном
   const [email, setEmail] = useState(''); // Email
@@ -180,13 +181,16 @@ const Auth: FC<AuthProps> = () => {
     queryFn: () => isEmailLogin ? verifyOTP(email, otp) : verifyOTP(phoneNumber, otp),
     enabled: phoneSubmitted && otp.length === 6,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 2000,
     retry: false
   })
 
   // При успешной верификации OTP
   useEffect(() => {
     if (status === 'success') {
-      if (otp.length === 6 && data.is_valid) {
+      if (otp.length === 6) {
+        if (data.is_valid) {
         toast({
           title: 'Успех',
           description: "Добро пожаловать!",
@@ -200,17 +204,20 @@ const Auth: FC<AuthProps> = () => {
           params.append('referrer', referrer ?? '');
           baseUrl.search = params.toString();
           window.location.replace(baseUrl.toString());
+          }
         }
-      }
-      if (otp.length === 6 && data.is_valid === false) {
-        setOtp(prev => prev.slice(0, -1));
-        toast({
-          title: 'Ошибка',
-          description: `Неверный код верификации`,
-          status: 'error',
-          duration: 1000,
-          isClosable: true,
-        })
+        else {
+          setIsInvalidOTP(true);
+          setOtp('');
+          pinInputRef.current?.focus();
+          toast({
+            title: 'Ошибка',
+            description: `Неверный код верификации`,
+            status: 'error',
+            duration: 1000,
+            isClosable: true,
+          });
+        }
       }
     } else if (status === 'error') {
       toast({
@@ -348,7 +355,10 @@ const Auth: FC<AuthProps> = () => {
                     {/* <Text>{isEmailLogin ? email : '+7 702 596 2345'}</Text> */}
                   </Box>
                   <HStack>
-                    <PinInput size={"lg"} value={otp} onChange={(value) => setOtp(value)} isInvalid={otp.length === 6 && !data?.is_valid}>
+                    <PinInput size={"lg"} value={otp} onChange={(value) => {
+                      setIsInvalidOTP(false);
+                      setOtp(value);
+                    }} isInvalid={isInvalidOTP}>
                       <PinInputField ref={pinInputRef} />
                       <PinInputField />
                       <PinInputField />
