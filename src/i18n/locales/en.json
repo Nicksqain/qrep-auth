@@ -1,0 +1,25 @@
+{
+  "russian": "Russian",
+  "english": "English",
+  "kazakh": "Kazakh",
+
+  "unified_auth": "Unified Authorization",
+  "login_registration": "Login / Registration",
+  "enter_phone_number": "Enter your phone number to receive the verification code",
+  "enter_email": "Enter your email to receive the verification code",
+  "phone_number_info": "The phone number is used for the loyalty system",
+  "send_code": "Send Code",
+  "login": "Login",
+  "registration": "Registration",
+  "resend_code": "Resend Code",
+  "enter_code_sent": "Enter the code sent to your {{source}}",
+  "enter_code_sent_email": "Enter the code sent to your email",
+  "enter_another_phone": "Enter another phone number",
+  "enter_another_email": "Enter another email",
+  "login_with_phone": "Login via phone",
+  "login_with_email": "Login via email",
+  "qr_in_your_phone": "QR IN YOUR PHONE",
+  "use_chatbots": "Use WhatsApp and Telegram chatbots to access QR services wherever you are.",
+  "authorization": "Authorization",
+  "track_orders": "Log in to track your orders"
+}
