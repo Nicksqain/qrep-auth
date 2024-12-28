@@ -4,17 +4,19 @@ import tgbotqr from '../../../../assets/tg_qrcode.png';
 import wabotqr from '../../../../assets/wa_qrcode.png';
 import waiCon from '../../../../assets/whatsapp_icon.svg';
 import tgIcon from '../../../../assets/telegram_icon.svg';
+import { useTranslation } from 'react-i18next';
 interface QRLinksProps {
 
 }
 
 const QRLinks: FC<QRLinksProps> = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const { t } = useTranslation();
 
   return (
     <VStack align={"start"} w={330} overflow={"hidden"}>
-      <Heading size={"md"}>QR В ТВОЕМ ТЕЛЕФОНЕ</Heading>
-      <Text>Используйте чат-боты в whatsapp и telegram, чтобы иметь доступ к сервисам QR, где бы вы не находились</Text>
+      <Heading size={"md"}>{t('qr_in_your_phone')}</Heading>
+      <Text>{t('use_chatbots')}</Text>
       {
         !isMobile ?
           <Box>
