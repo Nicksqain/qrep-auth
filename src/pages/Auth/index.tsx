@@ -208,6 +208,7 @@ const Auth: FC<AuthProps> = () => {
         }
         else {
           setIsInvalidOTP(true);
+          setTimeout(() => setIsInvalidOTP(false), 200);
           setOtp('');
           pinInputRef.current?.focus();
           toast({
