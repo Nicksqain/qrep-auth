@@ -56,6 +56,8 @@ const Auth: FC<AuthProps> = () => {
 
   const { referrer } = useAppSelector(state => state.referrerSlice)
 
+  const siteURL = referrer ? new URL(referrer).origin : '';
+
   // is СНГ страна
   const { countryInfo, isCIS } = useAppSelector((state) => state.countrySlice);
 
@@ -86,7 +88,7 @@ const Auth: FC<AuthProps> = () => {
 
   const mutation = useMutation({
     mutationFn: async (contact: string) => {
-      const res = await sendOTP(contact);
+      const res = await sendOTP(siteURL, contact);
       setResponse(res);
       return res;
     },
@@ -109,7 +111,7 @@ const Auth: FC<AuthProps> = () => {
 
   const resendMutation = useMutation({
     mutationFn: async (contact: string) => {
-      const res = await sendOTP(contact, true); // Pass the resend parameter as true
+      const res = await sendOTP(siteURL, contact, true); // Pass the resend parameter as true
       setResponse(res);
       return res;
     },
@@ -178,7 +180,7 @@ const Auth: FC<AuthProps> = () => {
 
   const { status, data, error } = useQuery({
     queryKey: ['verifyOTP', phoneNumber, otp],
-    queryFn: () => isEmailLogin ? verifyOTP(email, otp) : verifyOTP(phoneNumber, otp),
+    queryFn: () => isEmailLogin ? verifyOTP(siteURL, email, otp) : verifyOTP(siteURL, phoneNumber, otp),
     enabled: phoneSubmitted && otp.length === 6,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
