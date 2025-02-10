@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.tsx'
 import './index.css'
-import theme from './theme/index.ts'
-import { ChakraBaseProvider } from '@chakra-ui/react'
+
+import { Provider as ChakraProvider } from './components/ui/provider'
 import { Provider as ReduxProvider } from 'react-redux';
 import { setupStore } from './store/index.ts'
 
@@ -14,9 +14,9 @@ createRoot(document.getElementById('root')!).render(
   // <StrictMode>
     <ReduxProvider store={setupStore()}>
       <QueryClientProvider client={queryClient}>
-        <ChakraBaseProvider theme={theme}>
+      <ChakraProvider enableSystem={false} defaultTheme='light' forcedTheme='light'>
           <App />
-        </ChakraBaseProvider>
+      </ChakraProvider>
       </QueryClientProvider>
   </ReduxProvider>
 )
