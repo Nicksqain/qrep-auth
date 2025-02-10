@@ -9,7 +9,7 @@ export const buttonRecipe = defineRecipe({
     justifyContent: "center",
     userSelect: "none",
     position: "relative",
-    borderRadius: "l2",
+    borderRadius: "none",
     whiteSpace: "nowrap",
     verticalAlign: "middle",
     borderWidth: "1px",
@@ -144,8 +144,8 @@ export const buttonRecipe = defineRecipe({
         },
       },
       outline: {
-        borderWidth: "1px",
-        borderColor: "colorPalette.muted",
+        borderWidth: "2px",
+        borderColor: "colorPalette.solid",
         color: "colorPalette.fg",
         _hover: {
           bg: "colorPalette.subtle",
@@ -172,4 +172,4 @@ export const buttonRecipe = defineRecipe({
     size: "md",
     variant: "solid",
   },
-})
+});
