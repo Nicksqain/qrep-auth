@@ -7,13 +7,14 @@
 @media (max-width: 850px) {
   .auth-card {
     height: 100%;
-    padding: 30px;
+    padding: 20px;
   }
   .auth-container {
     height: 100%;
   }
   .auth-content-box {
     height: 100% !important;
+    align-items: center !important;
     flex-direction: column !important;
     justify-content: space-evenly !important;
   }
