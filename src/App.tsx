@@ -18,7 +18,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Suspense fallback={<div>Loading...</div>}>
+      element: <Suspense fallback={<Spinner size={"xl"} color="#1818cf" />}>
       <AuthPage />
     </Suspense>,
     },
