@@ -196,7 +196,7 @@ const Auth: FC<AuthProps> = () => {
       if (otp.join('')?.length === 6) {
         if (data.is_valid) {
           const promise = new Promise<void>((resolve) => {
-            setTimeout(() => resolve(), 3000)
+            setTimeout(() => resolve(), import.meta.env.VITE_APP_REDIRECT_DELAY ?? 1500)
           });
 
           toaster.promise(promise, {
