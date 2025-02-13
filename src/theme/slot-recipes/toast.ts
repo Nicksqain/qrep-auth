@@ -36,6 +36,12 @@ export const toastSlotRecipe = defineSlotRecipe({
         "--toast-trigger-bg": "{white/10}",
         "--toast-border-color": "{white/40}",
       },
+      "&[data-type=alert]": {
+        bg: "blue.solid",
+        color: "blue.contrast",
+        "--toast-trigger-bg": "{white/10}",
+        "--toast-border-color": "{white/40}",
+      },
       "&[data-type=success]": {
         bg: "green.solid",
         color: "green.contrast",
@@ -78,6 +84,7 @@ export const toastSlotRecipe = defineSlotRecipe({
       },
     },
     closeTrigger: {
+      cursor: "pointer",
       position: "absolute",
       top: "1",
       insetEnd: "1",
