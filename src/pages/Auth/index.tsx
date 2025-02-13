@@ -20,8 +20,9 @@ import { useTranslation } from 'react-i18next';
 import { setLanguage } from '../../slices/language.slice';
 import { Language } from '../../constants/languages';
 import { toaster } from '../../components/ui/toaster';
-import { Tooltip } from '../../components/ui/tooltip';
 import { FloatingInput } from '../../components/ui/floating-input';
+import { ToggleTip } from '../../components/ui/toggle-tip';
+import { LuInfo } from 'react-icons/lu';
 
 interface AuthProps { }
 
@@ -166,10 +167,11 @@ const Auth: FC<AuthProps> = () => {
 
     if (referrer?.endsWith('/order')) {
       toaster.create({
-        title: t('authorization'),
-        description: t('track_orders'),
-        type: 'info',
-        duration: undefined,
+        title: t("authorization"),
+        description: t("track_orders"),
+        type: "alert",
+        duration: 999999999,
+        meta: { closable: true }
       });
     }
   }, [location.search, dispatch, navigate]);
@@ -193,19 +195,31 @@ const Auth: FC<AuthProps> = () => {
     if (status === 'success') {
       if (otp.join('')?.length === 6) {
         if (data.is_valid) {
-          toaster.create({
-          title: 'Успех',
-          description: "Добро пожаловать!",
-            type: 'success',
-            duration: 1000,
-        });
-        if (data.auth_redirect) {
-          const baseUrl = new URL(data.auth_redirect);
-          const params = new URLSearchParams(baseUrl.search);
-          params.append('referrer', referrer ?? '');
-          baseUrl.search = params.toString();
-          window.parent.postMessage({ type: 'auth_success', redirectUrl: baseUrl.toString() }, '*');
-          }
+          const promise = new Promise<void>((resolve) => {
+            setTimeout(() => resolve(), 3000)
+          });
+
+          toaster.promise(promise, {
+            success: {
+              title: 'Успех',
+              description: "Добро пожаловать!",
+            },
+            error: {
+              title: 'Ошибка',
+              description: "Не удалдось перейти на страницу",
+            },
+            loading: { title: "Перенаправление...", description: "Пожалуйста подождите" },
+          });
+
+          promise.then(() => {
+            if (data.auth_redirect) {
+              const baseUrl = new URL(data.auth_redirect);
+              const params = new URLSearchParams(baseUrl.search);
+              params.append('referrer', referrer ?? '');
+              baseUrl.search = params.toString();
+              window.parent.postMessage({ type: 'auth_success', redirectUrl: baseUrl.toString() }, '*');
+            }
+          });
         }
         else {
           setIsInvalidOTP(true);
@@ -293,9 +307,11 @@ const Auth: FC<AuthProps> = () => {
                 <Stack gap={10} w={"100%"}>
                   <Flex justify={"space-between"} gap={2}>
                     <Text w={"350px"}>{isEmailLogin ? t('enter_email') : t('enter_phone_number')}</Text>
-                    <Tooltip content={t('phone_number_info')}>
-                      <Flex><InfoIcon width={25} height={25} /></Flex>
-                    </Tooltip>
+                    <ToggleTip content={t('phone_number_info')} showArrow={true}>
+                      <Button size="xs" variant="ghost">
+                        <LuInfo />
+                      </Button>
+                    </ToggleTip>
                   </Flex>
                   <Stack gap={4}>
                     {isEmailLogin ? (
