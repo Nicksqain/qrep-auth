@@ -7,16 +7,22 @@ import './index.css'
 import { Provider as ChakraProvider } from './components/ui/provider'
 import { Provider as ReduxProvider } from 'react-redux';
 import { setupStore } from './store/index.ts'
+import { Toaster } from "./components/ui/toaster.tsx";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   // <StrictMode>
-    <ReduxProvider store={setupStore()}>
-      <QueryClientProvider client={queryClient}>
-      <ChakraProvider enableSystem={false} defaultTheme='light' forcedTheme='light'>
-          <App />
+  <ReduxProvider store={setupStore()}>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider
+        enableSystem={false}
+        defaultTheme="light"
+        forcedTheme="light"
+      >
+        <Toaster />
+        <App />
       </ChakraProvider>
-      </QueryClientProvider>
+    </QueryClientProvider>
   </ReduxProvider>
-)
+);
