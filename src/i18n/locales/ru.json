@@ -18,7 +18,7 @@
   "login_with_phone": "Войти через телефон",
   "login_with_email": "Войти через email",
   "qr_in_your_phone": "QR В ТВОЕМ ТЕЛЕФОНЕ",
-  "use_chatbots": "Используйте чат-боты в whatsapp и telegram, чтобы иметь доступ к сервисам QR, где бы вы не находились.",
+  "use_chatbots": "Используйте чат-боты в WhatsApp и Telegram, чтобы получать доступ к сервисам QR, где бы вы ни находились.",
   "authorization": "Авторизация",
   "track_orders": "Авторизуйтесь, чтобы отслеживать ваши заказы"
 }
