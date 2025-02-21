@@ -410,7 +410,8 @@ const Auth: FC<AuthProps> = () => {
                 </VStack>
               )}
             </VStack>
-            {isMobile ? <QRLinks /> :
+            {/* // TODO: Добавить когда будут боты  */}
+            {/* {isMobile ? <QRLinks /> :
               <>
                 <Box
                   w={"100%"}
@@ -418,7 +419,7 @@ const Auth: FC<AuthProps> = () => {
                   <QRLinks />
                 </Box>
               </>
-            }
+            } */}
           </HStack>
         </VStack>
       </Box >
