@@ -7,7 +7,7 @@
   "login_registration": "Login / Registration",
   "enter_phone_number": "Enter your phone number to receive the verification code",
   "enter_email": "Enter your email to receive the verification code",
-  "phone_number_info": "The phone number is used for the loyalty system",
+  "phone_number_info": "The phone number is used for authentication",
   "send_code": "Send Code",
   "login": "Login",
   "registration": "Registration",
