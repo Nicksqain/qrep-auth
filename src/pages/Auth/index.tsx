@@ -1,5 +1,5 @@
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Button, Heading, Image, HStack, Input, Stack, Text, VStack, Flex, Field, useBreakpointValue, PinInput, Group } from '@chakra-ui/react';
+import { Box, Button, Heading, Image, HStack, Input, Stack, Text, VStack, Flex, Field, useBreakpointValue, PinInput, Group, Separator } from '@chakra-ui/react';
 import { motion, useAnimate } from 'framer-motion';
 import Logo from '../../components/Logo';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -386,7 +386,7 @@ const Auth: FC<AuthProps> = () => {
                     <Text>{isEmailLogin ? t('enter_code_sent_email') : t('enter_code_sent', { source: mutation.data?.final_source })}</Text>
                   </Box>
                   <HStack>
-                    <PinInput.Root size={{ base: "md", md: "2xl" }} placeholder='—' otp value={otp} variant={"flushed"} onValueChange={(e) => {
+                    <PinInput.Root selectOnFocus size={{ base: "md", md: "2xl" }} placeholder='—' otp value={otp} variant={"flushed"} onValueChange={(e) => {
                       console.debug('value', e);
                       setIsInvalidOTP(false);
                       setOtp(e.value);
@@ -404,9 +404,18 @@ const Auth: FC<AuthProps> = () => {
 
                   <ResendButton countdown={countdown} isButtonDisabled={isButtonDisabled} handleResendCode={handleResendCode} />
 
-                  <Button variant="plain" w={"100%"} mt={4} onClick={handleResetPhone}>
-                    {isEmailLogin ? t('enter_another_email') : t('enter_another_phone')}
-                  </Button>
+                  <HStack align={"center"} mt={4} justify={"center"} w={"100%"}>
+                    <Button variant="plain" onClick={handleResetPhone}>
+                      {isEmailLogin ? t('enter_another_email') : t('enter_another_phone')}
+                    </Button>
+                    <Separator orientation="vertical" height="4" />
+                    <Button variant="plain" onClick={() => {
+                      setPhoneSubmitted(false);
+                      setIsEmailLogin(!isEmailLogin)
+                    }}>
+                      {isEmailLogin ? t('login_with_phone') : t('login_with_email')}
+                    </Button>
+                  </HStack>
                 </VStack>
               )}
             </VStack>
