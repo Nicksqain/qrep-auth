@@ -404,7 +404,7 @@ const Auth: FC<AuthProps> = () => {
 
                   <ResendButton countdown={countdown} isButtonDisabled={isButtonDisabled} handleResendCode={handleResendCode} />
 
-                  <HStack align={"center"} mt={4} justify={"center"} w={"100%"}>
+                  <Stack direction={isMobile ? "column" : "row"} align={"center"} mt={4} justify={"center"} w={"100%"}>
                     <Button variant="plain" onClick={handleResetPhone}>
                       {isEmailLogin ? t('enter_another_email') : t('enter_another_phone')}
                     </Button>
@@ -415,7 +415,7 @@ const Auth: FC<AuthProps> = () => {
                     }}>
                       {isEmailLogin ? t('login_with_phone') : t('login_with_email')}
                     </Button>
-                  </HStack>
+                  </Stack>
                 </VStack>
               )}
             </VStack>
