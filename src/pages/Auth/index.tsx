@@ -46,7 +46,7 @@ const Auth: FC<AuthProps> = () => {
   const [isValidPhone, setIsValidPhone] = useState(false);
   const [isInvalidOTP, setIsInvalidOTP] = useState(false);
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
-  const [isEmailLogin, setIsEmailLogin] = useState(true); // Состояние для переключения между email и телефоном
+  const [isEmailLogin, setIsEmailLogin] = useState(false); // Состояние для переключения между email и телефоном
   const [email, setEmail] = useState(''); // Email
   const [isTouched, setIsTouched] = useState(false);
   const [emailError, setEmailError] = useState(''); // Email validation error
